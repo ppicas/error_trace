@@ -1,0 +1,15 @@
+name: error_trace
+description: Tools for better error stack traces
+version: 1.0.0
+# repository: https://github.com/my_org/my_repo
+
+environment:
+  sdk: ^3.2.0
+
+dependencies:
+  stack_trace: ^1.11.1
+  meta: ^1.11.0
+
+dev_dependencies:
+  lints: ^2.1.0
+  test: ^1.24.0

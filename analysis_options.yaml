@@ -1,0 +1,8 @@
+include: package:lints/recommended.yaml
+
+linter:
+  rules:
+    - unnecessary_await_in_return
+    - avoid_void_async
+    - unawaited_futures
+    - discarded_futures
