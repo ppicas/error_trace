@@ -1,6 +1,46 @@
+import 'dart:async';
+
 import 'package:error_trace/error_trace.dart';
+import 'package:stack_trace/stack_trace.dart';
 import 'package:test/test.dart';
 
 void main() {
-  test('Should ...', () {});
+  final containsMain = predicate((StackTrace st) {
+    final trace = Trace.from(st);
+    return trace.frames.any((frame) => frame.member == 'main.<fn>');
+  });
+
+  test(
+      'Should ensure `main()` is in the stack trace '
+      'when `traceErrors()` is used '
+      'and an asynchronous gap occurs', () async {
+    final completer = Completer<StackTrace>();
+    unawaited(_asyncFuncThatThrows().traceErrors().catchError((_, st) {
+      completer.complete(st);
+    }));
+
+    final st = await completer.future;
+
+    expect(st, containsMain);
+  });
+
+  test(
+      '`main()` should not be in the stack trace '
+      'when `traceErrors()` is not used '
+      'and an asynchronous gap occurs', () async {
+    final completer = Completer<StackTrace>();
+    unawaited(_asyncFuncThatThrows().catchError((_, st) {
+      completer.complete(st);
+    }));
+
+    final st = await completer.future;
+
+    expect(st, isNot(containsMain));
+  });
+}
+
+Future<void> _asyncFuncThatThrows() async {
+  return Future.delayed(Duration.zero).then((value) {
+    return Future.error(Exception('Network error'), StackTrace.current);
+  });
 }
