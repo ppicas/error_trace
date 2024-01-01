@@ -7,100 +7,207 @@ void main() {
     '#1      _rootRun (dart:async/zone.dart:1399:13)\n',
   );
 
-  test(
-    'Should not add the cause '
-    'when the exception doesn\'t implement ErrorCause',
-    () {
-      final error = _MockException();
+  group('With TraceableError', () {
+    test(
+      'Should not add the cause '
+      'when the exception doesn\'t implement ErrorCause',
+      () {
+        final error = _Error();
 
-      final text = error.format(fakeST);
+        final text = error.format(fakeST);
 
-      expect(
-        text,
-        'MockException\n'
-        '/test.dart 1:1  main\n',
-      );
-    },
-  );
-
-  test(
-    'Should add the cause '
-    'when the exception implements ErrorCause',
-    () {
-      final error1 = _MockException();
-
-      final error2 = _MockTraceableException(
-        error1,
-        fakeST,
-        message: 'Error 2',
-      );
-
-      final error3 = _MockTraceableException(
-        error2,
-        fakeST,
-        message: 'Error 3',
-      );
-
-      final text = error3.format(fakeST);
-
-      expect(
+        expect(
           text,
-          'MockTraceableException: Error 3\n'
-          '/test.dart 1:1  main\n'
-          '  # Caused by:\n'
-          '  MockTraceableException: Error 2\n'
-          '  /test.dart 1:1  main\n'
-          '    # Caused by:\n'
-          '    MockException\n'
-          '    /test.dart 1:1  main\n');
-    },
-  );
+          'Error\n'
+          '/test.dart 1:1  main\n',
+        );
+      },
+    );
 
-  test(
-    'Should add "Empty StackTrace" '
-    'when the StackTrace is empty',
-    () {
-      final error = _MockException();
+    test(
+      'Should add the cause '
+      'when the exception implements ErrorCause',
+      () {
+        final error1 = _Error();
 
-      final text = error.format(StackTrace.empty);
+        final error2 = _TraceableError(
+          'Error 2',
+          error1,
+          fakeST,
+        );
 
-      expect(
-        text,
-        'MockException\n'
-        'Empty StackTrace\n',
-      );
-    },
-  );
+        final error3 = _TraceableError(
+          'Error 3',
+          error2,
+          fakeST,
+        );
 
-  test(
-    'Should not filter Dart code lines from the StackTrace '
-    'when terse parameter is false',
-    () {
-      final error = _MockException();
+        final text = error3.format(fakeST);
 
-      final text = error.format(fakeST, terse: false);
+        expect(
+            text,
+            'TraceableError: Error 3\n'
+            '/test.dart 1:1  main\n'
+            '  # Caused by:\n'
+            '  TraceableError: Error 2\n'
+            '  /test.dart 1:1  main\n'
+            '    # Caused by:\n'
+            '    Error\n'
+            '    /test.dart 1:1  main\n');
+      },
+    );
 
-      expect(
-        text,
-        'MockException\n'
-        '/test.dart 1:1                main\n'
-        'dart:async/zone.dart 1399:13  _rootRun\n',
-      );
-    },
-  );
+    test(
+      'Should add "Empty StackTrace" '
+      'when the StackTrace is empty',
+      () {
+        final error = _Error();
+
+        final text = error.format(StackTrace.empty);
+
+        expect(
+          text,
+          'Error\n'
+          'Empty StackTrace\n',
+        );
+      },
+    );
+
+    test(
+      'Should not filter Dart code lines from the StackTrace '
+      'when terse parameter is false',
+      () {
+        final error = _Error();
+
+        final text = error.format(fakeST, terse: false);
+
+        expect(
+          text,
+          'Error\n'
+          '/test.dart 1:1                main\n'
+          'dart:async/zone.dart 1399:13  _rootRun\n',
+        );
+      },
+    );
+  });
+
+  group('With TraceableException', () {
+    test(
+      'Should not add the cause '
+      'when the exception doesn\'t implement ErrorCause',
+      () {
+        final error = _Exception();
+
+        final text = error.format(fakeST);
+
+        expect(
+          text,
+          'Exception\n'
+          '/test.dart 1:1  main\n',
+        );
+      },
+    );
+
+    test(
+      'Should add the cause '
+      'when the exception implements ErrorCause',
+      () {
+        final error1 = _Exception();
+
+        final error2 = _TraceableException(
+          'Error 2',
+          error1,
+          fakeST,
+        );
+
+        final error3 = _TraceableException(
+          'Error 3',
+          error2,
+          fakeST,
+        );
+
+        final text = error3.format(fakeST);
+
+        expect(
+            text,
+            'TraceableException: Error 3\n'
+            '/test.dart 1:1  main\n'
+            '  # Caused by:\n'
+            '  TraceableException: Error 2\n'
+            '  /test.dart 1:1  main\n'
+            '    # Caused by:\n'
+            '    Exception\n'
+            '    /test.dart 1:1  main\n');
+      },
+    );
+
+    test(
+      'Should add "Empty StackTrace" '
+      'when the StackTrace is empty',
+      () {
+        final error = _Exception();
+
+        final text = error.format(StackTrace.empty);
+
+        expect(
+          text,
+          'Exception\n'
+          'Empty StackTrace\n',
+        );
+      },
+    );
+
+    test(
+      'Should not filter Dart code lines from the StackTrace '
+      'when terse parameter is false',
+      () {
+        final error = _Exception();
+
+        final text = error.format(fakeST, terse: false);
+
+        expect(
+          text,
+          'Exception\n'
+          '/test.dart 1:1                main\n'
+          'dart:async/zone.dart 1399:13  _rootRun\n',
+        );
+      },
+    );
+  });
 }
 
-class _MockException implements Exception {
+class _Error extends Error {
   @override
   String toString() {
-    return 'MockException';
+    return 'Error';
   }
 }
 
-class _MockTraceableException extends TraceableException {
-  _MockTraceableException(
+class _TraceableError extends TraceableError {
+  _TraceableError(
+    String message,
     super.causeError,
-    super.causeStackTrace, {
-    super.message,
-  }) : super(name: 'MockTraceableException');
+    super.causeStackTrace,
+  ) : super(
+          name: 'TraceableError',
+          message: message,
+        );
+}
+
+class _Exception implements Exception {
+  @override
+  String toString() {
+    return 'Exception';
+  }
+}
+
+class _TraceableException extends TraceableException {
+  _TraceableException(
+    String message,
+    super.causeError,
+    super.causeStackTrace,
+  ) : super(
+          name: 'TraceableException',
+          message: message,
+        );
 }
