@@ -12,7 +12,7 @@ void main() {
 
   test(
       'Should ensure `main()` is in the stack trace '
-      'when `traceErrors()` is used '
+      'when `traceErrors()` is used in a Future '
       'and an asynchronous gap occurs', () async {
     final completer = Completer<StackTrace>();
     unawaited(_asyncFuncThatThrows().traceErrors().catchError((_, st) {
@@ -26,12 +26,40 @@ void main() {
 
   test(
       '`main()` should not be in the stack trace '
-      'when `traceErrors()` is not used '
+      'when `traceErrors()` is not used in a Future '
       'and an asynchronous gap occurs', () async {
     final completer = Completer<StackTrace>();
     unawaited(_asyncFuncThatThrows().catchError((_, st) {
       completer.complete(st);
     }));
+
+    final st = await completer.future;
+
+    expect(st, isNot(containsMain));
+  });
+
+  test(
+      'Should ensure `main()` is in the stack trace '
+      'when `traceErrors()` is used in a Stream '
+      'and an asynchronous gap occurs', () async {
+    final completer = Completer<StackTrace>();
+    _streamThatThrows().traceErrors().listen(null, onError: (e, st) {
+      completer.complete(st);
+    });
+
+    final st = await completer.future;
+
+    expect(st, containsMain);
+  });
+
+  test(
+      '`main()` should not be in the stack trace '
+      'when `traceErrors()` is not used in a Stream '
+      'and an asynchronous gap occurs', () async {
+    final completer = Completer<StackTrace>();
+    _streamThatThrows().listen(null, onError: (e, st) {
+      completer.complete(st);
+    });
 
     final st = await completer.future;
 
@@ -43,4 +71,9 @@ Future<void> _asyncFuncThatThrows() async {
   return Future.delayed(Duration.zero).then((value) {
     return Future.error(Exception('Network error'), StackTrace.current);
   });
+}
+
+Stream<void> _streamThatThrows() {
+  // ignore: discarded_futures
+  return Stream.fromFuture(_asyncFuncThatThrows());
 }
