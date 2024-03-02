@@ -4,14 +4,33 @@ import 'package:error_trace/error_trace.dart';
 
 void main() {
   runZonedGuarded(() {
+    // Calls `doSomeNetworkWork()` without capturing the errors.
+    unawaited(doSomeNetworkWork());
+  }, (error, stackTrace) {
+    // In this case 'stackTrace' only contains the call to
+    // `doSomeNetworkWork()` function and doesn't contain
+    // any `main()` functions calls.
+    // This makes hard to know when `doSomeNetworkWork()` was called.
+    print('### Uncaught error (Without error capturing):');
+    printError(error, stackTrace);
+    print('');
+  });
+
+  runZonedGuarded(() {
+    // Calls `doSomeNetworkWork()`, but this time capturing the errors.
     unawaited(doSomeNetworkWork().traceErrors());
-  }, (error, st) {
-    printError(error, st);
+  }, (error, stackTrace) {
+    // In this case `stackTrace` contains all the calls to
+    // `doSomeNetworkWork`, and `main()` functions.
+    // This makes easy to know when `doSomeNetworkWork()` was called.
+    print('### Uncaught error (With error capturing):');
+    printError(error, stackTrace);
+    print('');
   });
 }
 
 Future<void> doSomeNetworkWork() {
-  return Future.delayed(Duration.zero).then((value) {
-    return Future.error(Exception('Network error'), StackTrace.current);
+  return Future.delayed(Duration.zero, () {
+    throw Exception('Network error');
   });
 }
