@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:error_trace/src/error_cause.dart';
+import 'package:error_trace/src/traceable.dart';
 import 'package:stack_trace/stack_trace.dart';
 
 void printError(Object error, StackTrace st, {bool terse = true}) {
@@ -8,16 +8,16 @@ void printError(Object error, StackTrace st, {bool terse = true}) {
 }
 
 String formatError(Object error, StackTrace st, {bool terse = true}) {
-  var text = '$error\n';
+  var text = '$error [${error.runtimeType}]\n';
 
   text += st.toString().isNotEmpty
-      ? Trace.format(st, terse: terse)
-      : 'Empty StackTrace\n';
+      ? Trace.format(st, terse: terse).trimRight()
+      : 'Empty StackTrace';
 
-  if (error is ErrorCause) {
+  if (error is Traceable) {
     var causeText = '# Caused by:\n';
     causeText += formatError(error.causeError, error.causeStackTrace);
-    text += causeText.indent();
+    text += '\n${causeText.indent()}';
   }
 
   return text;
@@ -48,7 +48,6 @@ extension on String {
 
   String indent() {
     final lines = LineSplitter.split(this);
-    final indentedString = lines.map((line) => _prefix + line).join('\n');
-    return endsWith('\n') ? '$indentedString\n' : indentedString;
+    return lines.map((line) => _prefix + line).join('\n');
   }
 }

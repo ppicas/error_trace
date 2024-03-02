@@ -18,8 +18,8 @@ void main() {
 
         expect(
           text,
-          'Error\n'
-          '/test.dart 1:1  main\n',
+          'Error [_Error]\n'
+          '/test.dart 1:1  main',
         );
       },
     );
@@ -46,14 +46,14 @@ void main() {
 
         expect(
             text,
-            'TraceableError: Error 3\n'
+            'TraceableError: Error 3 [_TraceableError]\n'
             '/test.dart 1:1  main\n'
             '  # Caused by:\n'
-            '  TraceableError: Error 2\n'
+            '  TraceableError: Error 2 [_TraceableError]\n'
             '  /test.dart 1:1  main\n'
             '    # Caused by:\n'
-            '    Error\n'
-            '    /test.dart 1:1  main\n');
+            '    Error [_Error]\n'
+            '    /test.dart 1:1  main');
       },
     );
 
@@ -67,8 +67,8 @@ void main() {
 
         expect(
           text,
-          'Error\n'
-          'Empty StackTrace\n',
+          'Error [_Error]\n'
+          'Empty StackTrace',
         );
       },
     );
@@ -83,9 +83,9 @@ void main() {
 
         expect(
           text,
-          'Error\n'
+          'Error [_Error]\n'
           '/test.dart 1:1                main\n'
-          'dart:async/zone.dart 1399:13  _rootRun\n',
+          'dart:async/zone.dart 1399:13  _rootRun',
         );
       },
     );
@@ -102,8 +102,8 @@ void main() {
 
         expect(
           text,
-          'Exception\n'
-          '/test.dart 1:1  main\n',
+          'Exception [_Exception]\n'
+          '/test.dart 1:1  main',
         );
       },
     );
@@ -130,14 +130,14 @@ void main() {
 
         expect(
             text,
-            'TraceableException: Error 3\n'
+            'TraceableException: Error 3 [_TraceableException]\n'
             '/test.dart 1:1  main\n'
             '  # Caused by:\n'
-            '  TraceableException: Error 2\n'
+            '  TraceableException: Error 2 [_TraceableException]\n'
             '  /test.dart 1:1  main\n'
             '    # Caused by:\n'
-            '    Exception\n'
-            '    /test.dart 1:1  main\n');
+            '    Exception [_Exception]\n'
+            '    /test.dart 1:1  main');
       },
     );
 
@@ -151,8 +151,8 @@ void main() {
 
         expect(
           text,
-          'Exception\n'
-          'Empty StackTrace\n',
+          'Exception [_Exception]\n'
+          'Empty StackTrace',
         );
       },
     );
@@ -167,9 +167,9 @@ void main() {
 
         expect(
           text,
-          'Exception\n'
+          'Exception [_Exception]\n'
           '/test.dart 1:1                main\n'
-          'dart:async/zone.dart 1399:13  _rootRun\n',
+          'dart:async/zone.dart 1399:13  _rootRun',
         );
       },
     );
