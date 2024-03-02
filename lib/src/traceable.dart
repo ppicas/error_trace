@@ -1,4 +1,4 @@
-abstract interface class ErrorCause {
+abstract interface class Traceable {
   Object get causeError;
 
   StackTrace get causeStackTrace;
