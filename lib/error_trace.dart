@@ -3,8 +3,8 @@
 /// More dartdocs go here.
 library;
 
-export 'src/traceable.dart';
-export 'src/error_formatting.dart';
+export 'src/traceable/traceable.dart';
+export 'src/traceable/traceable_error.dart';
+export 'src/traceable/traceable_exception.dart';
 export 'src/trace_errors_extensions.dart';
-export 'src/traceable_error.dart';
-export 'src/traceable_exception.dart';
+export 'src/error_formatting.dart';

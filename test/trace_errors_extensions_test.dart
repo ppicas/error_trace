@@ -25,7 +25,7 @@ void main() {
   });
 
   test(
-      '`main()` should not be in the stack trace '
+      'Should not ensure `main()` is in the stack trace '
       'when `traceErrors()` is not used in a Future '
       'and an asynchronous gap occurs', () async {
     final completer = Completer<StackTrace>();
@@ -53,7 +53,7 @@ void main() {
   });
 
   test(
-      '`main()` should not be in the stack trace '
+      'Should not ensure `main()` is in the stack trace '
       'when `traceErrors()` is not used in a Stream '
       'and an asynchronous gap occurs', () async {
     final completer = Completer<StackTrace>();

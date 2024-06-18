@@ -1,7 +1,7 @@
-import 'package:error_trace/src/traceable.dart';
+import 'package:error_trace/src/traceable/traceable.dart';
 
-class TraceableError extends Error implements Traceable {
-  TraceableError(
+class TraceableException implements Exception, Traceable {
+  TraceableException(
     this.causeError,
     this.causeStackTrace, {
     this.message,

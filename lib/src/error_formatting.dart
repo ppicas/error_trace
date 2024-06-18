@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:error_trace/src/traceable.dart';
+import 'package:error_trace/src/traceable/traceable.dart';
 import 'package:stack_trace/stack_trace.dart';
 
 void printError(Object error, StackTrace st, {bool terse = true}) {
