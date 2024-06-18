@@ -4,11 +4,8 @@ class TraceableException implements Exception, Traceable {
   TraceableException(
     this.causeError,
     this.causeStackTrace, {
-    this.name,
     this.message,
   });
-
-  final String? name;
 
   final String? message;
 
@@ -20,7 +17,6 @@ class TraceableException implements Exception, Traceable {
 
   @override
   String toString() {
-    final type = name ?? runtimeType.toString();
-    return message != null ? '$type: $message' : type;
+    return message ?? super.toString();
   }
 }

@@ -4,11 +4,8 @@ class TraceableError extends Error implements Traceable {
   TraceableError(
     this.causeError,
     this.causeStackTrace, {
-    this.name,
     this.message,
   });
-
-  final String? name;
 
   final String? message;
 
@@ -20,7 +17,6 @@ class TraceableError extends Error implements Traceable {
 
   @override
   String toString() {
-    final type = name ?? runtimeType.toString();
-    return message != null ? '$type: $message' : type;
+    return message ?? super.toString();
   }
 }

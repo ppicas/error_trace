@@ -17,7 +17,6 @@ Future<void> main() async {
     print('');
   }
 
-
   try {
     // Calls a function that calls `doSomeNetworkWork()` catching possible
     // exceptions and throwing a `Traceable`.
@@ -55,5 +54,5 @@ class CustomTraceableException extends TraceableException {
     String message,
     super.causeError,
     super.causeStackTrace,
-  ) : super(name: 'CustomTraceableException', message: message);
+  ) : super(message: "CustomTraceableException: $message");
 }

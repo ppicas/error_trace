@@ -46,10 +46,10 @@ void main() {
 
         expect(
             text,
-            'TraceableError: Error 3 [_TraceableError]\n'
+            'Error 3 [_TraceableError]\n'
             '/test.dart 1:1  main\n'
             '  # Caused by:\n'
-            '  TraceableError: Error 2 [_TraceableError]\n'
+            '  Error 2 [_TraceableError]\n'
             '  /test.dart 1:1  main\n'
             '    # Caused by:\n'
             '    Error [_Error]\n'
@@ -130,10 +130,10 @@ void main() {
 
         expect(
             text,
-            'TraceableException: Error 3 [_TraceableException]\n'
+            'Error 3 [_TraceableException]\n'
             '/test.dart 1:1  main\n'
             '  # Caused by:\n'
-            '  TraceableException: Error 2 [_TraceableException]\n'
+            '  Error 2 [_TraceableException]\n'
             '  /test.dart 1:1  main\n'
             '    # Caused by:\n'
             '    Exception [_Exception]\n'
@@ -188,10 +188,7 @@ class _TraceableError extends TraceableError {
     String message,
     super.causeError,
     super.causeStackTrace,
-  ) : super(
-          name: 'TraceableError',
-          message: message,
-        );
+  ) : super(message: message);
 }
 
 class _Exception implements Exception {
@@ -206,8 +203,5 @@ class _TraceableException extends TraceableException {
     String message,
     super.causeError,
     super.causeStackTrace,
-  ) : super(
-          name: 'TraceableException',
-          message: message,
-        );
+  ) : super(message: message);
 }
