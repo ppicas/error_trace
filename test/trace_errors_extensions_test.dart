@@ -7,63 +7,68 @@ import 'package:test/test.dart';
 void main() {
   final containsMain = predicate((StackTrace st) {
     final trace = Trace.from(st);
-    return trace.frames.any((frame) => frame.member == 'main.<fn>');
+    return trace.frames
+        .any((frame) => frame.member?.startsWith('main.<') ?? false);
   });
 
-  test(
-      'Should ensure `main()` is in the stack trace '
-      'when `traceErrors()` is used in a Future '
-      'and an asynchronous gap occurs', () async {
-    final completer = Completer<StackTrace>();
-    unawaited(_asyncFuncThatThrows().traceErrors().catchError((_, st) {
-      completer.complete(st);
-    }));
+  group('FutureErrorUtils', () {
+    test(
+        'Should ensure `main()` is in the stack trace '
+        'when `traceErrors()` is used in a Future '
+        'and an asynchronous gap occurs', () async {
+      final completer = Completer<StackTrace>();
+      unawaited(_asyncFuncThatThrows().traceErrors().catchError((_, st) {
+        completer.complete(st);
+      }));
 
-    final st = await completer.future;
+      final st = await completer.future;
 
-    expect(st, containsMain);
-  });
-
-  test(
-      'Should not ensure `main()` is in the stack trace '
-      'when `traceErrors()` is not used in a Future '
-      'and an asynchronous gap occurs', () async {
-    final completer = Completer<StackTrace>();
-    unawaited(_asyncFuncThatThrows().catchError((_, st) {
-      completer.complete(st);
-    }));
-
-    final st = await completer.future;
-
-    expect(st, isNot(containsMain));
-  });
-
-  test(
-      'Should ensure `main()` is in the stack trace '
-      'when `traceErrors()` is used in a Stream '
-      'and an asynchronous gap occurs', () async {
-    final completer = Completer<StackTrace>();
-    _streamThatThrows().traceErrors().listen(null, onError: (e, st) {
-      completer.complete(st);
+      expect(st, containsMain);
     });
 
-    final st = await completer.future;
+    test(
+        'Should not ensure `main()` is in the stack trace '
+        'when `traceErrors()` is not used in a Future '
+        'and an asynchronous gap occurs', () async {
+      final completer = Completer<StackTrace>();
+      unawaited(_asyncFuncThatThrows().catchError((_, st) {
+        completer.complete(st);
+      }));
 
-    expect(st, containsMain);
+      final st = await completer.future;
+
+      expect(st, isNot(containsMain));
+    });
   });
 
-  test(
-      'Should not ensure `main()` is in the stack trace '
-      'when `traceErrors()` is not used in a Stream '
-      'and an asynchronous gap occurs', () async {
-    final completer = Completer<StackTrace>();
-    _streamThatThrows().listen(null, onError: (e, st) {
-      completer.complete(st);
+  group('StreamErrorUtils', () {
+    test(
+        'Should ensure `main()` is in the stack trace '
+        'when `traceErrors()` is used in a Stream '
+        'and an asynchronous gap occurs', () async {
+      final completer = Completer<StackTrace>();
+      _streamThatThrows().traceErrors().listen(null, onError: (e, st) {
+        completer.complete(st);
+      });
+
+      final st = await completer.future;
+
+      expect(st, containsMain);
     });
 
-    final st = await completer.future;
+    test(
+        'Should not ensure `main()` is in the stack trace '
+        'when `traceErrors()` is not used in a Stream '
+        'and an asynchronous gap occurs', () async {
+      final completer = Completer<StackTrace>();
+      _streamThatThrows().listen(null, onError: (e, st) {
+        completer.complete(st);
+      });
 
-    expect(st, isNot(containsMain));
+      final st = await completer.future;
+
+      expect(st, isNot(containsMain));
+    });
   });
 }
 

@@ -7,7 +7,7 @@ void main() {
     '#1      _rootRun (dart:async/zone.dart:1399:13)\n',
   );
 
-  group('With TraceableError', () {
+  group('ErrorFormatting', () {
     test(
       'Should not add the cause '
       'when the exception doesn\'t implement ErrorCause',
@@ -91,7 +91,7 @@ void main() {
     );
   });
 
-  group('With TraceableException', () {
+  group('ExceptionFormatting', () {
     test(
       'Should not add the cause '
       'when the exception doesn\'t implement ErrorCause',
