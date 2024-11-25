@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:error_trace/error_trace.dart';
 
+import 'fakes/network_fakes.dart';
+
 Future<void> main() async {
   try {
     // Calls a function that calls `doSomeNetworkWork()` without catching
@@ -32,21 +34,15 @@ Future<void> main() async {
 }
 
 Future<void> callWithoutThrowingTraceable() async {
-  return doSomeNetworkWork();
+  return fakeNetworkOperation(fail: true);
 }
 
 Future<void> callAndThrowTraceable() async {
   try {
-    await doSomeNetworkWork();
+    await fakeNetworkOperation(fail: true);
   } catch (e, st) {
     throw CustomTraceableException('Some network work failed', e, st);
   }
-}
-
-Future<void> doSomeNetworkWork() {
-  return Future.delayed(Duration.zero, () {
-    throw Exception('Network error');
-  });
 }
 
 class CustomTraceableException extends TraceableException {

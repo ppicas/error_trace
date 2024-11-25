@@ -2,10 +2,12 @@ import 'dart:async';
 
 import 'package:error_trace/error_trace.dart';
 
+import 'fakes/network_fakes.dart';
+
 void main() {
   runZonedGuarded(() {
     // Calls `doSomeNetworkWork()` without capturing the errors.
-    unawaited(doSomeNetworkWork());
+    unawaited(fakeNetworkOperation(fail: true));
   }, (error, stackTrace) {
     // In this case 'stackTrace' only contains the call to
     // `doSomeNetworkWork()` function and doesn't contain
@@ -18,7 +20,7 @@ void main() {
 
   runZonedGuarded(() {
     // Calls `doSomeNetworkWork()`, but this time capturing the errors.
-    unawaited(doSomeNetworkWork().traceErrors());
+    unawaited(fakeNetworkOperation(fail: true).traceErrors());
   }, (error, stackTrace) {
     // In this case `stackTrace` contains all the calls to
     // `doSomeNetworkWork`, and `main()` functions.
@@ -26,11 +28,5 @@ void main() {
     print('### Uncaught error (With error capturing):');
     printError(error, stackTrace);
     print('');
-  });
-}
-
-Future<void> doSomeNetworkWork() {
-  return Future.delayed(Duration.zero, () {
-    throw Exception('Network error');
   });
 }
