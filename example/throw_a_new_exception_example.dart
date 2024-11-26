@@ -6,27 +6,28 @@ import 'fakes/network_fakes.dart';
 
 Future<void> main() async {
   try {
-    // Calls a function that calls `doSomeNetworkWork()` without catching
+    // Calls a function that calls `fakeNetworkOperation()` without catching
     // possible exceptions.
     await callWithoutThrowingTraceable();
   } catch (error, stackTrace) {
     // In this case 'stackTrace' only contains the call to
-    // `doSomeNetworkWork()` function and doesn't contain
+    // `fakeNetworkOperation()` function and doesn't contain
     // `callWithoutThrowingTraceable()` or `main()` functions calls.
-    // This makes hard to know when `doSomeNetworkWork()` was called.
+    // This makes hard to know when `fakeNetworkOperation()` was called.
     print('### Error without throwing a Traceable:');
     printError(error, stackTrace);
     print('');
   }
 
   try {
-    // Calls a function that calls `doSomeNetworkWork()` catching possible
+    // Calls a function that calls `fakeNetworkOperation()` catching possible
     // exceptions and throwing a `Traceable`.
     await callAndThrowTraceable();
   } catch (error, stackTrace) {
     // In this case `stackTrace` contains all the calls to
-    // `doSomeNetworkWork`, `callAndThrowTraceable()`, and `main()` functions.
-    // This makes easy to know when `doSomeNetworkWork()` was called.
+    // `fakeNetworkOperation()`, `callAndThrowTraceable()`, and `main()`
+    // functions. This makes easy to know when `fakeNetworkOperation()` was
+    // called.
     print('### Error throwing a Traceable:');
     printError(error, stackTrace);
     print('');
