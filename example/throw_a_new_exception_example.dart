@@ -42,14 +42,13 @@ Future<void> callAndThrowTraceable() async {
   try {
     await fakeNetworkOperation(fail: true);
   } catch (e, st) {
-    throw CustomTraceableException('Some network work failed', e, st);
+    throw NetworkException(e, st);
   }
 }
 
-class CustomTraceableException extends TraceableException {
-  CustomTraceableException(
-    String message,
+class NetworkException extends TraceableException {
+  NetworkException(
     super.causeError,
     super.causeStackTrace,
-  ) : super(message: "CustomTraceableException: $message");
+  ) : super(name: 'NetworkException');
 }

@@ -8,7 +8,7 @@ void printError(Object error, StackTrace st, {bool terse = true}) {
 }
 
 String formatError(Object error, StackTrace st, {bool terse = true}) {
-  var text = '$error [${error.runtimeType}]\n';
+  var text = '$error\n';
 
   text += st.toString().isNotEmpty
       ? Trace.format(st, terse: terse).trimRight()

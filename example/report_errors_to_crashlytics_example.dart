@@ -48,7 +48,7 @@ class MyApp extends StatefulWidget {
     try {
       await fakeNetworkOperation(fail: true);
     } catch (error, stack) {
-      throw CustomTraceableException('Network operation failed', error, stack);
+      throw FetchException('Network operation failed', error, stack);
     }
   }
 
@@ -58,10 +58,10 @@ class MyApp extends StatefulWidget {
   }
 }
 
-class CustomTraceableException extends TraceableException {
-  CustomTraceableException(
+class FetchException extends TraceableException {
+  FetchException(
     String message,
     super.causeError,
     super.causeStackTrace,
-  ) : super(message: 'CustomTraceableException: $message');
+  ) : super(name: 'FetchException', message: message);
 }

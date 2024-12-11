@@ -10,15 +10,15 @@ void main() {
   group('ErrorFormatting', () {
     test(
       'Should not add the cause '
-      'when the exception doesn\'t implement ErrorCause',
+      'when the exception doesn\'t implement `Traceable`',
       () {
-        final error = _Error();
+        final error = _Error('Error');
 
         final text = error.format(fakeST);
 
         expect(
           text,
-          'Error [_Error]\n'
+          'Error\n'
           '/test.dart 1:1  main',
         );
       },
@@ -26,9 +26,9 @@ void main() {
 
     test(
       'Should add the cause '
-      'when the exception implements ErrorCause',
+      'when the exception implements `Traceable`',
       () {
-        final error1 = _Error();
+        final error1 = _Error('Error 1');
 
         final error2 = _TraceableError(
           'Error 2',
@@ -45,15 +45,16 @@ void main() {
         final text = error3.format(fakeST);
 
         expect(
-            text,
-            'Error 3 [_TraceableError]\n'
-            '/test.dart 1:1  main\n'
-            '  # Caused by:\n'
-            '  Error 2 [_TraceableError]\n'
-            '  /test.dart 1:1  main\n'
-            '    # Caused by:\n'
-            '    Error [_Error]\n'
-            '    /test.dart 1:1  main');
+          text,
+          'Error 3 (Caused by: Error 2 (Caused by: Error 1))\n'
+          '/test.dart 1:1  main\n'
+          '  # Caused by:\n'
+          '  Error 2 (Caused by: Error 1)\n'
+          '  /test.dart 1:1  main\n'
+          '    # Caused by:\n'
+          '    Error 1\n'
+          '    /test.dart 1:1  main',
+        );
       },
     );
 
@@ -61,13 +62,13 @@ void main() {
       'Should add "Empty StackTrace" '
       'when the StackTrace is empty',
       () {
-        final error = _Error();
+        final error = _Error('Error');
 
         final text = error.format(StackTrace.empty);
 
         expect(
           text,
-          'Error [_Error]\n'
+          'Error\n'
           'Empty StackTrace',
         );
       },
@@ -77,13 +78,13 @@ void main() {
       'Should not filter Dart code lines from the StackTrace '
       'when terse parameter is false',
       () {
-        final error = _Error();
+        final error = _Error('Error');
 
         final text = error.format(fakeST, terse: false);
 
         expect(
           text,
-          'Error [_Error]\n'
+          'Error\n'
           '/test.dart 1:1                main\n'
           'dart:async/zone.dart 1399:13  _rootRun',
         );
@@ -94,15 +95,15 @@ void main() {
   group('ExceptionFormatting', () {
     test(
       'Should not add the cause '
-      'when the exception doesn\'t implement ErrorCause',
+      'when the exception doesn\'t implement `Traceable`',
       () {
-        final error = _Exception();
+        final error = _Exception('Exception');
 
         final text = error.format(fakeST);
 
         expect(
           text,
-          'Exception [_Exception]\n'
+          'Exception\n'
           '/test.dart 1:1  main',
         );
       },
@@ -110,18 +111,18 @@ void main() {
 
     test(
       'Should add the cause '
-      'when the exception implements ErrorCause',
+      'when the exception implements `Traceable`',
       () {
-        final error1 = _Exception();
+        final error1 = _Exception('Exception 1');
 
         final error2 = _TraceableException(
-          'Error 2',
+          'Exception 2',
           error1,
           fakeST,
         );
 
         final error3 = _TraceableException(
-          'Error 3',
+          'Exception 3',
           error2,
           fakeST,
         );
@@ -129,15 +130,16 @@ void main() {
         final text = error3.format(fakeST);
 
         expect(
-            text,
-            'Error 3 [_TraceableException]\n'
-            '/test.dart 1:1  main\n'
-            '  # Caused by:\n'
-            '  Error 2 [_TraceableException]\n'
-            '  /test.dart 1:1  main\n'
-            '    # Caused by:\n'
-            '    Exception [_Exception]\n'
-            '    /test.dart 1:1  main');
+          text,
+          'Exception 3 (Caused by: Exception 2 (Caused by: Exception 1))\n'
+          '/test.dart 1:1  main\n'
+          '  # Caused by:\n'
+          '  Exception 2 (Caused by: Exception 1)\n'
+          '  /test.dart 1:1  main\n'
+          '    # Caused by:\n'
+          '    Exception 1\n'
+          '    /test.dart 1:1  main',
+        );
       },
     );
 
@@ -145,13 +147,13 @@ void main() {
       'Should add "Empty StackTrace" '
       'when the StackTrace is empty',
       () {
-        final error = _Exception();
+        final error = _Exception('Exception');
 
         final text = error.format(StackTrace.empty);
 
         expect(
           text,
-          'Exception [_Exception]\n'
+          'Exception\n'
           'Empty StackTrace',
         );
       },
@@ -161,13 +163,13 @@ void main() {
       'Should not filter Dart code lines from the StackTrace '
       'when terse parameter is false',
       () {
-        final error = _Exception();
+        final error = _Exception('Exception');
 
         final text = error.format(fakeST, terse: false);
 
         expect(
           text,
-          'Exception [_Exception]\n'
+          'Exception\n'
           '/test.dart 1:1                main\n'
           'dart:async/zone.dart 1399:13  _rootRun',
         );
@@ -177,10 +179,12 @@ void main() {
 }
 
 class _Error extends Error {
+  _Error(this.message);
+
+  final String message;
+
   @override
-  String toString() {
-    return 'Error';
-  }
+  String toString() => message;
 }
 
 class _TraceableError extends TraceableError {
@@ -192,10 +196,12 @@ class _TraceableError extends TraceableError {
 }
 
 class _Exception implements Exception {
+  _Exception(this.message);
+
+  final String message;
+
   @override
-  String toString() {
-    return 'Exception';
-  }
+  String toString() => message;
 }
 
 class _TraceableException extends TraceableException {
