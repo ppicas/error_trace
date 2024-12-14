@@ -43,17 +43,21 @@ void main() {
   group('StackTraceExtension', () {
     group('When error Object extends Traceable', () {
       test(
-          'Should generate a new StackTrace '
+          'Should generate a Chain '
           'including first the cause StackTrace '
           'and then the current one', () async {
         try {
           await callAndThrowATraceable();
         } catch (e, st) {
-          final stWithCauses = st.withCauses(e);
+          final chain = st.chainCauses(e);
+
+          final flattenedMembers = chain.traces.expand(
+            (trace) => trace.frames.map((frame) => frame.member),
+          );
           expect(
-            stWithCauses.toString(),
-            stringContainsInOrder([
-              'main.fakeSomeNetworkWork',
+            flattenedMembers,
+            containsAllInOrder([
+              'main.fakeSomeNetworkWork.<fn>',
               'main.callAndThrowATraceable.throwFromCall',
               'main.callAndThrowATraceable',
             ]),
@@ -62,17 +66,21 @@ void main() {
       });
 
       test(
-          'Should generate a new StackTrace '
+          'Should generate a Chain '
           'first recurrently including in order the causes StackTraces '
           'and then the current one', () async {
         try {
           await indirectCallAndThrowATraceable();
         } catch (e, st) {
-          final stWithCauses = st.withCauses(e);
+          final chain = st.chainCauses(e);
+
+          final flattenedMembers = chain.traces.expand(
+            (trace) => trace.frames.map((frame) => frame.member),
+          );
           expect(
-            stWithCauses.toString(),
-            stringContainsInOrder([
-              'main.fakeSomeNetworkWork',
+            flattenedMembers,
+            containsAllInOrder([
+              'main.fakeSomeNetworkWork.<fn>',
               'main.callAndThrowATraceable.throwFromCall',
               'main.callAndThrowATraceable',
               'main.indirectCallAndThrowATraceable.throwFromIndirectCall',
@@ -84,14 +92,12 @@ void main() {
     });
 
     group('When error Object does not extends Traceable', () {
-      test(
-          'Should return the same StackTrace '
-          'when the error Object does not extend Traceable', () async {
+      test('Should return a Chain with only 1 Trace', () async {
         try {
           await callAndNotThrowATraceable();
         } catch (e, st) {
-          final stWithCauses = st.withCauses(e);
-          expect(stWithCauses.toString(), equals(st.toString()));
+          final chain = st.chainCauses(e);
+          expect(chain.traces, hasLength(1));
         }
       });
     });

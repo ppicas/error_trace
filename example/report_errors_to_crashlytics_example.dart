@@ -14,16 +14,22 @@ Future<void> main() async {
   FlutterError.onError = (error, stack) {
     FirebaseCrashlytics.instance.recordFlutterFatalError(
       error,
-      // Pass a [StackTrace] including all the causes
-      stack.withCauses(error),
+      // Creates a [Chain] instance that includes all the causes chained.
+      //
+      // [Chain] is a class provided by `stack_trace` package that implements
+      // [StackTrace] so it can be passed to Crashlytics.
+      stack.chainCauses(error),
     );
   };
 
   PlatformDispatcher.instance.onError = (error, stack) {
     FirebaseCrashlytics.instance.recordError(
       error,
-      // Pass a [StackTrace] including all the causes
-      stack.withCauses(error),
+      // Creates a [Chain] instance that includes all the causes chained.
+      //
+      // [Chain] is a class provided by `stack_trace` package that implements
+      // [StackTrace] so it can be passed to Crashlytics.
+      stack.chainCauses(error),
       fatal: true,
     );
     return true;

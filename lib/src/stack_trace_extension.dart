@@ -2,15 +2,19 @@ import 'package:error_trace/error_trace.dart';
 import 'package:stack_trace/stack_trace.dart';
 
 extension StackTraceExtension on StackTrace {
-  StackTrace withCauses(Object error) {
-    if (error is Traceable) {
-      final thisTrace = Trace.from(this);
-      final causeTrace = Trace.from(
-        error.causeStackTrace.withCauses(error.causeError),
-      );
-      return Trace(causeTrace.frames + thisTrace.frames).vmTrace;
-    } else {
-      return this;
+  Chain chainCauses(Object error) {
+    final traces = [Trace.from(this)];
+
+    var current = error;
+    while (true) {
+      if (current is Traceable) {
+        traces.insert(0, Trace.from(current.causeStackTrace));
+        current = current.causeError;
+      } else {
+        break;
+      }
     }
+
+    return Chain(traces);
   }
 }
