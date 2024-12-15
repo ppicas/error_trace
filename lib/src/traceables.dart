@@ -1,4 +1,4 @@
-import 'package:error_trace/src/traceable/traceable.dart';
+import 'package:error_trace/src/traceable.dart';
 
 class TraceableException implements Exception, Traceable {
   TraceableException(
