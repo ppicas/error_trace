@@ -2,44 +2,6 @@ import 'package:error_trace/error_trace.dart';
 import 'package:test/test.dart';
 
 void main() {
-  Future<void> fakeSomeNetworkWork() {
-    return Future.delayed(Duration.zero, () {
-      throw Exception('Network error');
-    });
-  }
-
-  Future<void> callAndThrowATraceable() async {
-    Never throwFromCall(Object e, StackTrace st) {
-      throw TraceableException(e, st);
-    }
-
-    try {
-      await fakeSomeNetworkWork();
-    } catch (e, st) {
-      throwFromCall(e, st);
-    }
-  }
-
-  Future<void> indirectCallAndThrowATraceable() async {
-    Never throwFromIndirectCall(Object e, StackTrace st) {
-      throw TraceableException(e, st);
-    }
-
-    try {
-      await callAndThrowATraceable();
-    } catch (e, st) {
-      throwFromIndirectCall(e, st);
-    }
-  }
-
-  Future<void> callAndNotThrowATraceable() async {
-    try {
-      await fakeSomeNetworkWork();
-    } catch (e) {
-      throw Exception('No Traceable exception');
-    }
-  }
-
   group('StackTraceExtension', () {
     group('When error Object extends Traceable', () {
       test(
@@ -47,7 +9,7 @@ void main() {
           'including first the cause StackTrace '
           'and then the current one', () async {
         try {
-          await callAndThrowATraceable();
+          await _callAndThrowATraceable();
         } catch (e, st) {
           final chain = st.chainCauses(e);
 
@@ -70,7 +32,7 @@ void main() {
           'first recurrently including in order the causes StackTraces '
           'and then the current one', () async {
         try {
-          await indirectCallAndThrowATraceable();
+          await _indirectCallAndThrowATraceable();
         } catch (e, st) {
           final chain = st.chainCauses(e);
 
@@ -94,7 +56,7 @@ void main() {
     group('When error Object does not extends Traceable', () {
       test('Should return a Chain with only 1 Trace', () async {
         try {
-          await callAndNotThrowATraceable();
+          await _callAndNotThrowATraceable();
         } catch (e, st) {
           final chain = st.chainCauses(e);
           expect(chain.traces, hasLength(1));
@@ -102,4 +64,42 @@ void main() {
       });
     });
   });
+}
+
+Future<void> _fakeSomeNetworkWork() {
+  return Future.delayed(Duration.zero, () {
+    throw Exception('Network error');
+  });
+}
+
+Future<void> _callAndThrowATraceable() async {
+  Never throwFromCall(Object e, StackTrace st) {
+    throw TraceableException(e, st);
+  }
+
+  try {
+    await _fakeSomeNetworkWork();
+  } catch (e, st) {
+    throwFromCall(e, st);
+  }
+}
+
+Future<void> _indirectCallAndThrowATraceable() async {
+  Never throwFromIndirectCall(Object e, StackTrace st) {
+    throw TraceableException(e, st);
+  }
+
+  try {
+    await _callAndThrowATraceable();
+  } catch (e, st) {
+    throwFromIndirectCall(e, st);
+  }
+}
+
+Future<void> _callAndNotThrowATraceable() async {
+  try {
+    await _fakeSomeNetworkWork();
+  } catch (e) {
+    throw Exception('No Traceable exception');
+  }
 }
