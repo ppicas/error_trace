@@ -23,7 +23,7 @@ void main() {
   runZonedGuarded(() {
     // Calls `fakeNetworkOperation()`, but this time capturing the errors.
     fakeNetworkOperation(fail: true)
-        .catchError((e, st) => throw _NetworkException(e, st));
+        .catchError((e, st) => throw NetworkException(e, st));
   }, (error, stackTrace) {
     // In this case `stackTrace` contains all the calls to
     // `fakeNetworkOperation()`, and `main()` functions.
@@ -34,8 +34,8 @@ void main() {
   });
 }
 
-class _NetworkException extends TraceableException {
-  _NetworkException(
+class NetworkException extends TraceableException {
+  NetworkException(
     super.causeError,
     super.causeStackTrace,
   ) : super(name: 'NetworkException');

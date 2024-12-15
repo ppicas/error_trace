@@ -54,7 +54,7 @@ class MyApp extends StatefulWidget {
     try {
       await fakeNetworkOperation(fail: true);
     } catch (error, stack) {
-      throw _FetchException('Network operation failed', error, stack);
+      throw FetchException('Network operation failed', error, stack);
     }
   }
 
@@ -64,8 +64,8 @@ class MyApp extends StatefulWidget {
   }
 }
 
-class _FetchException extends TraceableException {
-  _FetchException(
+class FetchException extends TraceableException {
+  FetchException(
     String message,
     super.causeError,
     super.causeStackTrace,

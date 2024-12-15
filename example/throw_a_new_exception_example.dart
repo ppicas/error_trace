@@ -42,12 +42,12 @@ Future<void> callAndThrowTraceable() async {
   try {
     await fakeNetworkOperation(fail: true);
   } catch (e, st) {
-    throw _NetworkException(e, st);
+    throw NetworkException(e, st);
   }
 }
 
-class _NetworkException extends TraceableException {
-  _NetworkException(
+class NetworkException extends TraceableException {
+  NetworkException(
     super.causeError,
     super.causeStackTrace,
   ) : super(name: 'NetworkException');
