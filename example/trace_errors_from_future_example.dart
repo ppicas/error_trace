@@ -1,3 +1,5 @@
+// ignore_for_file: discarded_futures
+
 import 'dart:async';
 
 import 'package:error_trace/error_trace.dart';
@@ -7,7 +9,7 @@ import 'fakes/network_fakes.dart';
 void main() {
   runZonedGuarded(() {
     // Calls `fakeNetworkOperation()` without capturing the errors.
-    unawaited(fakeNetworkOperation(fail: true));
+    fakeNetworkOperation(fail: true);
   }, (error, stackTrace) {
     // In this case 'stackTrace' only contains the call to
     // `fakeNetworkOperation()` function and doesn't contain
@@ -20,7 +22,8 @@ void main() {
 
   runZonedGuarded(() {
     // Calls `fakeNetworkOperation()`, but this time capturing the errors.
-    unawaited(fakeNetworkOperation(fail: true).traceErrors());
+    fakeNetworkOperation(fail: true)
+        .catchError((e, st) => throw _NetworkException(e, st));
   }, (error, stackTrace) {
     // In this case `stackTrace` contains all the calls to
     // `fakeNetworkOperation()`, and `main()` functions.
@@ -29,4 +32,11 @@ void main() {
     printError(error, stackTrace);
     print('');
   });
+}
+
+class _NetworkException extends TraceableException {
+  _NetworkException(
+    super.causeError,
+    super.causeStackTrace,
+  ) : super(name: 'NetworkException');
 }

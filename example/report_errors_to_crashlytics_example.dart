@@ -47,14 +47,14 @@ Future<void> main() async {
 class MyApp extends StatefulWidget {
   @override
   void init() {
-    unawaited(_fetchData().traceErrors());
+    unawaited(_fetchData());
   }
 
   Future<void> _fetchData() async {
     try {
       await fakeNetworkOperation(fail: true);
     } catch (error, stack) {
-      throw FetchException('Network operation failed', error, stack);
+      throw _FetchException('Network operation failed', error, stack);
     }
   }
 
@@ -64,8 +64,8 @@ class MyApp extends StatefulWidget {
   }
 }
 
-class FetchException extends TraceableException {
-  FetchException(
+class _FetchException extends TraceableException {
+  _FetchException(
     String message,
     super.causeError,
     super.causeStackTrace,
