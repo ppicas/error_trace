@@ -12,17 +12,16 @@ import 'package:error_trace/src/traceable.dart';
 class TraceableException implements Exception, Traceable {
   /// Creates a [TraceableException].
   ///
-  /// The [causeError] is the error that caused this error.
+  /// The [causeError] is the error that caused this exception.
   ///
   /// The [causeStackTrace] is the stack trace of the error that caused this
-  /// error.
+  /// exception.
   ///
-  /// The [name] is an optional name for this error. It is used to format the
-  /// string when [toString] is called. It represents the name of the error.
+  /// The [name] is an optional name that represents this exception.
+  /// It is used to format the string when [toString] is called.
   ///
-  /// The [message] is an optional message for this error. It is used to format
-  /// the string when [toString] is called. It is a custom message explaining
-  /// the reason for the error.
+  /// The [message] is an optional custom message explaining the reason for
+  /// this exception. It is used to format the string when [toString] is called.
   TraceableException(
     this.causeError,
     this.causeStackTrace, {
@@ -30,20 +29,19 @@ class TraceableException implements Exception, Traceable {
     this.message,
   });
 
-  /// An optional name for this error. It is used to format the string when
-  /// [toString] is called. It represents the name of the error.
+  /// An optional name that represents this exception.
+  /// It is used to format the string when [toString] is called.
   final String? name;
 
-  /// An optional message for this error. It is used to format the string when
-  /// [toString] is called. It is a custom message explaining the reason for
-  /// the error.
+  /// An optional custom message explaining the reason for this exception.
+  /// It is used to format the string when [toString] is called.
   final String? message;
 
-  /// The error that caused this error.
+  /// The error that caused this exception.
   @override
   final Object causeError;
 
-  /// The stack trace of the error that caused this error.
+  /// The stack trace of the error that caused this exception.
   @override
   final StackTrace causeStackTrace;
 
@@ -68,12 +66,11 @@ class TraceableError extends Error implements Traceable {
   /// The [causeStackTrace] is the stack trace of the error that caused this
   /// error.
   ///
-  /// The [name] is an optional name for this error. It is used to format the
-  /// string when [toString] is called. It represents the name of the error.
+  /// The [name] is an optional name that represents this error.
+  /// It is used to format the string when [toString] is called.
   ///
-  /// The [message] is an optional message for this error. It is used to format
-  /// the string when [toString] is called. It is a custom message explaining
-  /// the reason for the error.
+  /// The [message] is an optional custom message explaining the reason for
+  /// this error. It is used to format the string when [toString] is called.
   TraceableError(
     this.causeError,
     this.causeStackTrace, {
@@ -81,13 +78,12 @@ class TraceableError extends Error implements Traceable {
     this.message,
   });
 
-  /// An optional name for this error. It is used to format the string when
-  /// [toString] is called. It represents the name of the error.
+  /// An optional name that represents this error.
+  /// It is used to format the string when [toString] is called.
   final String? name;
 
-  /// An optional message for this error. It is used to format the string when
-  /// [toString] is called. It is a custom message explaining the reason for
-  /// the error.
+  /// An optional custom message explaining the reason for this error.
+  /// It is used to format the string when [toString] is called.
   final String? message;
 
   /// The error that caused this error.
