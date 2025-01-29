@@ -1,7 +1,12 @@
 name: error_trace
 description: Tools for better error stack traces
 version: 1.0.0
-# repository: https://github.com/my_org/my_repo
+repository: https://github.com/ppicas/error_trace
+topics:
+  - error
+  - error-handling
+  - stacktrace
+  - exceptions
 
 environment:
   sdk: ^3.2.0
