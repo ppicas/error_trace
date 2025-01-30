@@ -1,11 +1,12 @@
 name: error_trace
-description: Tools for better error stack traces
+description: Tools that prevent stack trace loss across async gaps, improving error diagnostics.
 version: 1.0.0
 repository: https://github.com/ppicas/error_trace
 topics:
   - error
   - error-handling
   - stacktrace
+  - debug
   - exceptions
 
 environment:
