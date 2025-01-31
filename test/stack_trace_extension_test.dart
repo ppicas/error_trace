@@ -19,9 +19,9 @@ void main() {
           expect(
             flattenedMembers,
             containsAllInOrder([
-              'main.fakeSomeNetworkWork.<fn>',
-              'main.callAndThrowATraceable.throwFromCall',
-              'main.callAndThrowATraceable',
+              '_fakeSomeNetworkWork.<fn>',
+              '_callAndThrowATraceable.throwFromCall',
+              '_callAndThrowATraceable',
             ]),
           );
         }
@@ -42,11 +42,11 @@ void main() {
           expect(
             flattenedMembers,
             containsAllInOrder([
-              'main.fakeSomeNetworkWork.<fn>',
-              'main.callAndThrowATraceable.throwFromCall',
-              'main.callAndThrowATraceable',
-              'main.indirectCallAndThrowATraceable.throwFromIndirectCall',
-              'main.indirectCallAndThrowATraceable',
+              '_fakeSomeNetworkWork.<fn>',
+              '_callAndThrowATraceable.throwFromCall',
+              '_callAndThrowATraceable',
+              '_indirectCallAndThrowATraceable.throwFromIndirectCall',
+              '_indirectCallAndThrowATraceable',
             ]),
           );
         }
