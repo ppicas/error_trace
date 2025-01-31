@@ -7,7 +7,7 @@ void runApp(StatefulWidget widget) {
         widget.init();
         widget.build();
       } catch (error, stack) {
-        FlutterError.onError?.call(error, stack);
+        FlutterError.onError?.call(FlutterErrorDetails(error, stack));
       }
     },
     (error, stack) {
@@ -47,5 +47,12 @@ final class PlatformDispatcher {
 }
 
 abstract final class FlutterError {
-  static void Function(Object error, StackTrace stackTrace)? onError;
+  static void Function(FlutterErrorDetails details)? onError;
+}
+
+class FlutterErrorDetails {
+  const FlutterErrorDetails(this.exception, this.stack);
+
+  final Object exception;
+  final StackTrace stack;
 }

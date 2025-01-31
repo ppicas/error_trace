@@ -11,14 +11,14 @@ Future<void> main() async {
 
   await Firebase.initializeApp();
 
-  FlutterError.onError = (error, stack) {
+  FlutterError.onError = (details) {
     FirebaseCrashlytics.instance.recordFlutterFatalError(
-      error,
+      details.exception,
       // Creates a [Chain] instance that includes all the causes chained.
       //
       // [Chain] is a class provided by `stack_trace` package that implements
       // [StackTrace] so it can be passed to Crashlytics.
-      stack.chainCauses(error),
+      details.stack.chainCauses(details.exception),
     );
   };
 
