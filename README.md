@@ -1,18 +1,24 @@
-Dart tools that prevent stack trace loss across async operations, improving error diagnostics.
+Dart utilities to preserve stack traces across asynchronous calls for better debugging.
 
-This package provides a set of lightweight tools to enhance error diagnostics in Dart and Flutter
-applications by mitigating the loss of stack trace information for exceptions thrown during
-asynchronous operations.
+With `error_trace` you can get full stack traces that include the whole chain of calls, even if
+there are asynchronous gaps in the middle. This makes it easier to debug Dart and Flutter
+applications.
 
-With `error_trace`, you can maintain complete stack traces, making debugging asynchronous code
-significantly easier.
+<details>
+<summary>Background: Problems with exceptions in asynchronous calls</summary>
+
+Debugging errors in asynchronous Dart code can be tricky. When an error occurs within an `async`
+function, the resulting stack trace may be incomplete. This is because asynchronous calls
+introduce "gaps" where the execution pauses and resumes. Across these gaps, the original call stack
+can be lost, making it difficult to trace the error back to its source.
+</details>
 
 ## Features
 
 Use this package to:
 
 - **Chain errors:** Throw exceptions that wrap the original error, preserving the context of the
-  initial failure across asynchronous operations.
+  initial failure across asynchronous calls.
 - **Preserve stack traces:** Maintain complete stack traces across `async`, `await`, and `Future`
   gaps, preventing loss of crucial call stack information.
 - **Enhance crash reporting:** Report crashes with full, chained stack traces to services like
@@ -34,15 +40,6 @@ import 'package:error_trace/error_trace.dart';
 ```
 
 ## Usage
-
-<details>
-<summary>Background: Problems with exceptions in asynchronous operations</summary>
-
-Debugging errors in asynchronous Dart code can be tricky. When an error occurs within an `async`
-function, the resulting stack trace may be incomplete. This is because asynchronous operations
-introduce "gaps" where the execution pauses and resumes. Across these gaps, the original call stack
-can be lost, making it difficult to trace the error back to its source.
-</details>
 
 Consider the following Dart code:
 
@@ -67,7 +64,7 @@ void main() {
 When you run this code, you might expect the stack trace to show that the error originated in
 `fetchData` and was called by `processData`. However, the output might look something like this:
 
-```
+```text
 Caught an error:
 Exception: Failed to fetch data
 
@@ -80,8 +77,8 @@ Notice that the stack trace doesn't show that `processData` called `fetchData`. 
 introduced by `await Future.delayed` has caused the loss of that part of the call stack. This makes
 it harder to understand the sequence of events that led to the error.
 
-To preserve the complete stack trace across asynchronous operations we transform the above code by
-using `error_trace` in the following way:
+To preserve the complete stack trace across asynchronous calls we transform the above code by using
+`error_trace` in the following way:
 
 ```dart
 Future<void> fetchData() async {
@@ -109,7 +106,7 @@ void main() {
 
 Now, the output might look something like this:
 
-```
+```text
 Caught an error:
 Process data exception (Caused by: Exception: Failed to fetch data)
   path/to/your/file.dart 6:13  processData
@@ -213,7 +210,7 @@ void main() {
 
 It prints the error details formated like this:
 
-```
+```text
 FooException: Foo failed (Caused by: BarException: Bar failed (Caused by: Exception))
   path/to/your/foo.dart 6:13   fooFunction
   path/to/your/file.dart 14:5  main
