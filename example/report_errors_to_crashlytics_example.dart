@@ -6,6 +6,10 @@ import 'fakes/firebase_fakes.dart';
 import 'fakes/flutter_fakes.dart';
 import 'fakes/network_fakes.dart';
 
+// This example simulates a Flutter app integrated with Crashlytics.
+//
+// It uses fake versions of the Flutter and Crashlytics APIs for demonstration
+// purposes.
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -14,10 +18,11 @@ Future<void> main() async {
   FlutterError.onError = (details) {
     FirebaseCrashlytics.instance.recordFlutterFatalError(
       details.exception,
-      // Creates a [Chain] instance that includes all the causes chained.
+      // Use the `chainCauses` extension method from the `error_trace` package
+      // to create a [Chain] that includes all the causes chained.
       //
-      // [Chain] is a class provided by `stack_trace` package that implements
-      // [StackTrace] so it can be passed to Crashlytics.
+      // [Chain] is a class provided by the `stack_trace` package that
+      // implements [StackTrace] so it can be passed to Crashlytics.
       details.stack.chainCauses(details.exception),
     );
   };
@@ -25,22 +30,19 @@ Future<void> main() async {
   PlatformDispatcher.instance.onError = (error, stack) {
     FirebaseCrashlytics.instance.recordError(
       error,
-      // Creates a [Chain] instance that includes all the causes chained.
-      //
-      // [Chain] is a class provided by `stack_trace` package that implements
-      // [StackTrace] so it can be passed to Crashlytics.
+      // Use the `chainCauses` extension method as before.
       stack.chainCauses(error),
       fatal: true,
     );
     return true;
   };
 
-  // This will trigger `PlatformDispatcher.instance.onError`. The uncaught
-  // error will be reported to Crashlytics by calling
+  // This will intentionally trigger `PlatformDispatcher.instance.onError`. The
+  // uncaught error will be reported to Crashlytics by calling
   // `FirebaseCrashlytics.instance.recordError`.
   //
-  // The `StackTrace` sent to Crashlytics will include all the causes that
-  // generated the error.
+  // The `StackTrace` sent to Crashlytics will include the complete causal chain
+  // of the error, thanks to the use of `chainCauses` and [Chain].
   runApp(MyApp());
 }
 
