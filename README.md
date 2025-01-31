@@ -268,6 +268,9 @@ The `chainCauses` extension method on `StackTrace` combines multiple stack trace
 errors into a single `Chain` object. This object is provided by the `stack_trace` package and can be
 passed to Crashlytics because it implements `StackTrace`.
 
+You can check a full example
+at [report_errors_to_crashlytics_example.dart](example/report_errors_to_crashlytics_example.dart).
+
 More info on how to setup Crashlytics can be
 found [here](https://firebase.flutter.dev/docs/crashlytics/usage).
 
