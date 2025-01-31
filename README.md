@@ -112,10 +112,10 @@ Now, the output might look something like this:
 ```
 Caught an error:
 Process data exception (Caused by: Exception: Failed to fetch data)
-  at path/to/your/file.dart 6:13  processData
-  at path/to/your/file.dart 14:5  main
+  path/to/your/file.dart 6:13  processData
+  path/to/your/file.dart 14:5  main
 Caused by: Exception: Failed to fetch data
-  at path/to/your/file.dart 1:9  fetchData
+  path/to/your/file.dart 1:9  fetchData
 ```
 
 Notice that the stack trace now shows that `processData` called `fetchData`.
@@ -215,13 +215,13 @@ It prints the error details formated like this:
 
 ```
 FooException: Foo failed (Caused by: BarException: Bar failed (Caused by: Exception))
-  at path/to/your/foo.dart 6:13   fooFunction
-  at path/to/your/file.dart 14:5  main
+  path/to/your/foo.dart 6:13   fooFunction
+  path/to/your/file.dart 14:5  main
 Caused by: BarException: Bar failed (Caused by: Exception)
-  at path/to/your/bar.dart 3:3   someFunction
-  at path/to/your/bar.dart 10:6  barFunction
+  path/to/your/bar.dart 3:3   someFunction
+  path/to/your/bar.dart 10:6  barFunction
 Caused by: Exception
-  at path/to/your/another.dart 3:15  anotherFunction
+  path/to/your/another.dart 3:15  anotherFunction
 ```
 
 You can check the [API reference](https://pub.dev/documentation/error_trace/latest/error_trace/) for
