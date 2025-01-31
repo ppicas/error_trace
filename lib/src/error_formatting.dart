@@ -3,44 +3,55 @@ import 'dart:convert';
 import 'package:error_trace/src/traceable.dart';
 import 'package:stack_trace/stack_trace.dart';
 
-void printError(Object error, StackTrace st, {bool terse = true}) {
-  print(formatError(error, st, terse: terse));
+/// Prints an error and its stack trace to the console.
+///
+/// If [error] implements [Traceable], this function will recursively format
+/// the error's cause, creating a chain of errors in the output.
+///
+/// [error] and [stackTrace] are the error object and its associated
+/// stack trace to format.
+///
+/// If [terse] is set to true (default), this folds together multiple stack
+/// frames from the Dart core libraries, so that only the core library method
+/// directly called from user code is visible.
+void printError(Object error, StackTrace stackTrace, {bool terse = true}) {
+  print(formatError(error, stackTrace, terse: terse));
 }
 
-String formatError(Object error, StackTrace st, {bool terse = true}) {
-  var text = '$error\n';
+/// Returns a formatted error and its stack trace into a readable string.
+///
+/// If [error] implements [Traceable], this function will recursively format
+/// the error's cause, creating a chain of errors in the output.
+///
+/// [error] and [stackTrace] are the error object and its associated
+/// stack trace to format.
+///
+/// If [terse] is set to true (default), this folds together multiple stack
+/// frames from the Dart core libraries, so that only the core library method
+/// directly called from user code is visible.
+String formatError(Object error, StackTrace stackTrace, {bool terse = true}) {
+  final buffer = StringBuffer();
 
-  text += st.toString().isNotEmpty
-      ? Trace.format(st, terse: terse).trimRight()
-      : 'Empty StackTrace';
+  buffer.writeln(error);
+
+  final st = switch (stackTrace) {
+    StackTrace.empty when error is Error => error.stackTrace,
+    StackTrace.empty => null,
+    _ => stackTrace,
+  };
+
+  final formattedSt =
+      st != null ? Trace.format(st, terse: terse) : 'unknown location';
+
+  buffer.write(formattedSt.indent());
 
   if (error is Traceable) {
-    var causeText = '# Caused by:\n';
-    causeText += formatError(error.causeError, error.causeStackTrace);
-    text += '\n${causeText.indent()}';
+    buffer.writeln();
+    buffer.write('Caused by: ');
+    buffer.write(formatError(error.causeError, error.causeStackTrace));
   }
 
-  return text;
-}
-
-extension ExceptionFormatting on Exception {
-  void print(StackTrace st, {bool terse = true}) {
-    printError(this, st, terse: terse);
-  }
-
-  String format(StackTrace st, {bool terse = true}) {
-    return formatError(this, st, terse: terse);
-  }
-}
-
-extension ErrorFormatting on Error {
-  void print(StackTrace st, {bool terse = true}) {
-    printError(this, st, terse: terse);
-  }
-
-  String format(StackTrace st, {bool terse = true}) {
-    return formatError(this, st, terse: terse);
-  }
+  return buffer.toString();
 }
 
 extension on String {
